@@ -1,0 +1,26 @@
+#
+#  @(#)$Id: 38aa24cc33a5f54a93781d63005a084f74418022 $
+#  Module version 3.2.10
+#  init/.modulespath.  Generated from .modulespath.in by configure.
+#
+#  Modulepath initial setup
+#  ========================
+#
+#  This file defines the initial setup for the module files search path.
+#  Comments may be added anywhere, which begin on # and continue until the
+#     end of the line
+#  Each line containing a single path will be added to the MODULEPATH
+#     environment variable. You may add as many as you want - just
+#     limited by the maximum variable size of your shell.
+#
+/etc/environment-modules/modules
+/usr/share/modules/versions                             # location of version files
+/usr/Modules/$MODULE_VERSION/modulefiles        # Module pkg modulefiles (if versioning)
+#/usr/Modules/modulefiles       # Module pkg modulefiles (if no versioning)
+/usr/share/modules/modulefiles                          # General module files
+#/usr/Modules/3.2.10/your_contribs                      # Edit for your requirements
+# University of Oslo. Common module environment for Geosciences
+/home/ubuntu/uio/modules/modulefiles/environment
+/home/ubuntu/uio/modules/modulefiles/compilers
+/home/ubuntu/uio/modules/modulefiles/software
+/home/ubuntu/uio/modules/modulefiles/libraries

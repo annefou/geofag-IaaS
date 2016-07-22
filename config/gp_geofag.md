@@ -150,7 +150,7 @@ sudo apt-get install libqt5webkit5-dev
 
 updated /usr/share/modules/init/.modulespath
 
-And it should look like to [this file](.modulepath).
+And it should look like to [this file](.modulespath).
 
 
 
