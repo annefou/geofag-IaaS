@@ -54,6 +54,8 @@ bash Anaconda3-4.1.0-Linux-x86_64.sh
 
 - At the end of the installation, I accepted to add the PATH for python3 anaconda in .bashrc
 
+**Note**: Anaconda 4.1.0 may not be the latest version available. We suggest you try install the latest version of Anaconda; check https://www.continuum.io/downloads
+
 Additional python packages
 ===========================
 
@@ -84,4 +86,6 @@ jupyter notebook
 This previous command opens a new browser with jupyter notebook. You are now ready to work!
 
 Remember, you can logout and login again on the same instance. You do not need to re-install python and all the packages and can just start python notebook.
+
+**Note**: you can install python 2 instead of python 3 (make sure you download Anaconda2-4.1.0-Linux-x86_64.sh)
 
