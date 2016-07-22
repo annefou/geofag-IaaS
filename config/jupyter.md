@@ -36,6 +36,7 @@ TO BE DONE
 
 
 ### 4. Install all the necessary software and libraries
+
 sudo apt-get install x11-apps
 sudo apt-get update
 sudo apt-get install openjdk-7-jre
@@ -75,3 +76,12 @@ conda install -c anaconda basemap
 - iris
 
 conda install --channel https://conda.anaconda.org/IOOS iris
+
+### 5. Start your jupyter notebook
+
+jupyter notebook
+
+This previous command opens a new browser with jupyter notebook. You are now ready to work!
+
+Remember, you can logout and login again on the same instance. You do not need to re-install python and all the packages and can just start python notebook.
+
