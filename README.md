@@ -23,5 +23,6 @@ Now you are ready to create an openstack server. Choose in this list which use c
 
 1. [openstack server for Geosciences](config/gp_geofag.md)
 2. [jupyter notebook](config/jupyter.md)
+3. [jupyterhub notebook](config/jupyterhub.md) (used for instance for teaching)
 3. [Medium-size simulations on openstack (WRF, FLEXPART, openIFS)](config/simulations.md)
 4. [Big-data](config/bd.md)
