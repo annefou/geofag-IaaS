@@ -28,7 +28,8 @@ In our example the IP address is 158.37.63.220 and we assume your SSH private ke
 
 To access your new created instance (and you are the only one to be able to login thanks to the usage of your SSH keypair), you do not use your UIO username but the generic ubuntu username
 
-ssh -Y -i $HOME/.ssh/id_rsa ubuntu@158.37.63.220
+
+    ssh -Y -i $HOME/.ssh/id_rsa ubuntu@158.37.63.220
 
 **From a Windows machine**:
 
@@ -37,51 +38,53 @@ TO BE DONE
 
 ### 4. Install all the necessary software and libraries
 
-sudo apt-get install x11-apps
-sudo apt-get update
-sudo apt-get install openjdk-7-jre
-sudo apt-get install firefox
+    sudo apt-get install x11-apps
+    sudo apt-get update
+    sudo apt-get install openjdk-7-jre
+    sudo apt-get install firefox
 
 Installation of python 3
 ==========================
 
-wget http://repo.continuum.io/archive/Anaconda3-4.1.0-Linux-x86_64.sh
-
-bash Anaconda3-4.1.0-Linux-x86_64.sh
-
+    wget http://repo.continuum.io/archive/Anaconda3-4.1.0-Linux-x86_64.sh
+    
+    bash Anaconda3-4.1.0-Linux-x86_64.sh
+    
 
 - When asked where to install python, I chose the default location
 
 - At the end of the installation, I accepted to add the PATH for python3 anaconda in .bashrc
 
-**Note**: Anaconda 4.1.0 may not be the latest version available. We suggest you try install the latest version of Anaconda; check https://www.continuum.io/downloads
+**Note**: Anaconda 4.1.0 may not be the latest version available. We suggest you try install the latest version of Anaconda; check [https://www.continuum.io/ ](https://www.continuum.io/ )downloads
 
 Additional python packages
 ===========================
 
 We oftenv need additional python packages (such as ncdf4, etc.). The first thing to do is updating conda: 
 
-conda update conda
-
-conda install --channel https://conda.anaconda.org/anaconda-nb-extensions nbbrowserpdf
+    conda update conda
+    
+    conda install --channel https://conda.anaconda.org/anaconda-nb-extensions nbbrowserpdf
 
 We give here a non exhaustive list of what we have installed:
 
 - netCDF4:
   
-conda install netcdf4
+
+    conda install netcdf4
 
 - basemap:
 
-conda install -c anaconda basemap
+    conda install -c anaconda basemap
 
 - iris
 
-conda install --channel https://conda.anaconda.org/IOOS iris
+
+    conda install --channel https://conda.anaconda.org/IOOS iris
 
 ### 5. Start your jupyter notebook
 
-jupyter notebook
+    jupyter notebook
 
 This previous command opens a new browser with jupyter notebook. You are now ready to work!
 

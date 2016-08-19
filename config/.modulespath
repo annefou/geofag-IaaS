@@ -20,7 +20,7 @@
 /usr/share/modules/modulefiles                          # General module files
 #/usr/Modules/3.2.10/your_contribs                      # Edit for your requirements
 # University of Oslo. Common module environment for Geosciences
-/home/ubuntu/uio/modules/modulefiles/environment
-/home/ubuntu/uio/modules/modulefiles/compilers
-/home/ubuntu/uio/modules/modulefiles/software
-/home/ubuntu/uio/modules/modulefiles/libraries
+/opt/uio/modules/modulefiles/environment
+/opt/uio/modules/modulefiles/compilers
+/opt/uio/modules/modulefiles/software
+/opt/uio/modules/modulefiles/libraries
