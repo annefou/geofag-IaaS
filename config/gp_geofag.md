@@ -368,7 +368,7 @@ Installation de Vapor3D:
 Download Linux - x86_64 (64 bits) binary distribution at [https://www.vapor.ucar.edu/internal/downloads/binary-distributions](https://www.vapor.ucar.edu/internal/downloads/binary-distributions)
 
 
-./vapor-install.csh $PREFIX/vapor/2.5.0
+    ./vapor-install.csh $PREFIX/vapor/2.5.0
 
 
 Installation de Panoply:

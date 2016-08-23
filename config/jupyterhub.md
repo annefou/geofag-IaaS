@@ -4,107 +4,319 @@ Our goal is to set-up an openstack server and use it for running a Jupyter noteb
 
 
 
-Follow the steps for install jupyter notebook on openstack. Here we assume you have done it and give you information on how to build a jupyterhub server from a jupyter notebook openstack installation
+### 1. [Login](https://iaas.readthedocs.io/en/latest/enduser/login.html#subsequent-logins) to the UIO dashboard [https://dashboard.iaas.uio.no/](https://dashboard.iaas.uio.no/)
 
-### 1. Login to your jupyter notebook instance 
+
+
+### 2. Create a [Virtual machine](https://iaas.readthedocs.io/en/latest/enduser/create-virtual-machine.html#create-a-virtual-machine) using the following resources: 
+
+
+![alt text](../images/jupyter_geofag.png "Jupyter notebook")
+
+Don't forget to tick "SSH and ICMP" in the Access & Security tab and to choose your SSH keypair (especially if you imported more than one!):
+![alt text](../images/ssh_ICMP.png "Access & Security") 
+
+
+### 3. Login to your jupyterhub notebook instance 
 
 **From a Linux** (and probably Mac, even though I did not test it) machine:
 
 To access your new created instance (and you are the only one to be able to login thanks to the usage of your SSH keypair), you do not use your UIO username but the generic ubuntu username
 
-ssh -Y -i $HOME/.ssh/id_rsa ubuntu@158.37.63.220
+ssh -Y -i $HOME/.ssh/id_rsa ubuntu@158.37.63.70
 
 **From a Windows machine**:
 
 TO BE DONE
  
-### 2. Installation de jupyterhub (for running python 3 notebooks):
+### 4. Installation de jupyterhub (for running python 3 notebooks):
 
-See https://zonca.github.io/2016/04/jupyterhub-sdsc-cloud.html
+See [https://zonca.github.io/2016/04/jupyterhub-sdsc-cloud.html](https://zonca.github.io/2016/04/jupyterhub-sdsc-cloud.html)
 
-sudo  apt-get update
+Here we used a simplified installation of jupyterhub.
+
+## Installation of default packages ##
+
+    sudo  apt-get update
+    sudo apt-get -y install x11-apps
+    sudo apt-get -y install firefox
+    sudo apt-get -y install openssl
+    sudo  apt-get update
 
 
-- Add hostname in your hosts file:
+## Add hostname in your hosts file ##
 
 sudo vi /etc/hosts
 
-My instance is called jupyterhub so I added geofag on the first line:
+My instance is called jupyterhub so I added jupyterhub on the first line:
 
 127.0.0.1 localhost jupyterhub
 
 (I had 127.0.0.1 localhost)
 
-sudo apt-get install npm
+## Create a new volume ###
 
-sudo apt-get install nodejs-legacy
+This step needs to be done once only i.e. you create a new volume to host your jupyterhub once only and then you just [attach](https://iaas.readthedocs.io/en/latest/enduser/manage-volumes.html#attach-a-volume-to-a-virtual-machine)/[detach](https://iaas.readthedocs.io/en/latest/enduser/manage-volumes.html#detach-a-volume-from-a-virtual-machine) it from your running instances.
 
-sudo npm install -g configurable-http-proxy
+To create a new volume to host software (python anaconda, jupyterhub) as well as local data (please make backup of your data and use this volume as a local storage (for processing your data), follow instructions given at [https://iaas.readthedocs.io/en/latest/enduser/manage-volumes.html](https://iaas.readthedocs.io/en/latest/enduser/manage-volumes.html) to [create a new volume](https://iaas.readthedocs.io/en/latest/enduser/manage-volumes.html#create-a-volume) and [attach it to your instance](https://iaas.readthedocs.io/en/latest/enduser/manage-volumes.html#attach-a-volume-to-a-virtual-machine).
 
-conda install traitlets tornado jinja2 sqlalchemy 
+Once created (**to be done with a new volume only**):
 
-pip install jupyterhub
+### Find out which device to mount: ###
 
-sudo adduser ubuntu shadow
+    lsblk
 
-sudo apt install nginx
+This command will return something like:
 
-sudo mkdir /etc/nginx/ssl
+    NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+    vda 253:0   0  20G  0 disk
+    |__vda1 253:1   0  20G  0 part /
+    vdb 253:16  0  20G  0 disk
 
-sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt
+The last line is the most important. Here it tells you that vdb is your new volume. (if you have vdc or any other "name", please make sure you adapt the next commands!).
 
-Get /etc/nginx/nginx.conf from https://gist.github.com/zonca/08c413a37401bdc9d2a7f65a7af44462 and put it in /etc/nginx/nginx.conf
-
-sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.ori
-
-sudo cp nginx.conf /etc/nginx/nginx.conf
-
-sudo apt update
-
-sudo apt install apt-transport-https ca-certificates
-
-sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D 
-
-echo "deb https://apt.dockerproject.org/repo ubuntu-wily main" | sudo tee /etc/apt/sources.list.d/docker.list
-
-sudo apt-get update
-
-sudo apt-get purge lxc-docker
-
-apt-cache policy docker-engine
-
-sudo apt-get install linux-image-extra-$(uname -r)
-
-sudo apt install docker-engine
-
-sudo usermod -aG docker ubuntu
-
-- Logout and login again for the group to take effect
+### Create an ext4 File System: ###
 
 
-pip install dockerspawner
+    mkfs.ext4 /dev/vdb
 
-docker pull jupyter/systemuser <-- it fails if you forgot to logout and login again...
+### Create a new directory to mount your new volume: ###
 
-conda install ipython jupyter
+    mkdir -p /opt/uio
+    
+
+### Mount your new volume: ###
+
+     mount /dev/vdb /opt/uio
+
+### Check your new volume: ###
+
+    df -h /opt/uio
+
+It should return something like:
+    
+    FilesystemSize  Used Available Use% Mounted on
+    /dev/vdb  19.8G150.5M  19.2G   2% /opt/uio
+ 
+
+## Installation of python 3 (anaconda) ##
+
+    wget http://repo.continuum.io/archive/Anaconda3-4.1.1-Linux-x86_64.sh
+    
+    bash Anaconda3-4.1.1-Linux-x86_64.sh
+    
+Install it in /opt/uio/anaconda3 and agree to add python in your path in .bashrc
+
+Now make sure you logout and login again (or source .bashrc)
+
+### Installation of python packages for Geosciences
+
+    conda update conda
+    
+    conda install --channel https://conda.anaconda.org/anaconda-nb-extensions nbbrowserpdf
+    
+    conda install netcdf4
+    
+    conda install -c anaconda basemap
+    
+    conda install --channel https://conda.anaconda.org/SciTools iris
+    
+
+## Installation de nodejs/npm 
+    
+    sudo  apt-get update
+    sudo apt-get -y install npm nodejs-legacy
+    
+
+## Create an SSL Certificate on Nginx for Ubuntu
+
+### Install nginx
+
+    sudo apt-get update
+    sudo apt-get -y install nginx
+
+### Create certificate
+
+    sudo mkdir /etc/nginx/ssl
+    sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt
+
+Both files are then created in /etc/nginx/ssl
 
 
-- Create jupyterhub_config.py in the home folder of the ubuntu user with this content:
+## Configure Nginx to Use SSL:
 
-c.JupyterHub.confirm_no_ssl = True
-c.JupyterHub.spawner_class = 'dockerspawner.SystemUserSpawner'
+Modify your nginx configuration /etc/nginx/sites-enabled/default (used to be in nginx.conf)
 
-\# The docker instances need access to the Hub, so the default loopback port doesn't work:
-from IPython.utils.localinterfaces import public_ips
-c.JupyterHub.hub_ip = public_ips()[0]
-
-### 3. Start jupyterhub:
-
-From the home folder of the ubuntu user, type
-
-jupyterhub
-
- to launch the Jupyterhub process, see below how to start it automatically at boot. Use CTRL-C to stop it.
+Uncomment listen 443 ssl default_server;
 
 
-###Pending problem: I still can't access jupyterhub from outside... I need help to fix it.
+        # SSL configuration
+        #
+        listen 443 ssl default_server;
+        # listen [::]:443 ssl default_server;
+        #
+        # Note: You should disable gzip for SSL traffic.
+        # See: https://bugs.debian.org/773332
+        #
+        # Read up on ssl_ciphers to ensure a secure configuration.
+        # See: https://bugs.debian.org/765782
+        #
+        # Self signed certs generated by the ssl-cert package
+        # Don't use them in a production server!
+        #
+        # include snippets/snakeoil.conf;
+
+        root /var/www/html;
+
+        # Add index.php to the list if you are using PHP
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name _;
+        #AF Add ssl certificate
+        ssl_certificate /etc/nginx/ssl/nginx.crt;
+        ssl_certificate_key /etc/nginx/ssl/nginx.key;
+        #End AF
+
+
+Restart nginx:
+
+    sudo service nginx restart
+    
+Now both http://158.37.63.70/ and https://158.37.63.70/ work. You also need to accept untrusted connection for https://158.37.63.70/ because your certificate is not verified.
+
+
+## Installation de jupyterhub:
+    
+### Install jupyterhub and sudospawner
+    
+    sudo npm install -g configurable-http-proxy
+    
+    pip install jupyterhub
+    pip install --upgrade notebook
+    
+    pip install git+https://github.com/jupyter/sudospawner
+    
+### Create a new user
+
+    sudo useradd jyroot
+    
+    sudo groupadd jupyterhub
+
+    sudo visudo
+
+Added at the end of the file:
+
+    #AF give the new user sudo permissions only for launching the sudospawner script
+    # the command(s) the Hub can run on behalf of the above users without needing a password
+    # the exact path may differ, depending on how sudospawner was installed
+    Cmnd_Alias JUPYTER_CMD = /opt/uio/anaconda3/bin/sudospawner
+    # actually give the Hub user permission to run the above command on behalf
+    # of the above users without prompting for a password
+    jyroot ALL=(%jupyterhub) NOPASSWD:JUPYTER_CMD
+    #End AF
+    
+And updated secure_path:
+
+    Defaults	secure_path="/opt/uio/anaconda3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    
+Finally, make sure you add both ubuntu and jyroot in jupyterhub group
+
+
+    sudo usermod -a -G jupyterhub ubuntu
+    sudo usermod -a -G jupyterhub jyroot
+    
+Test:
+
+    sudo -u jyroot sudo -n -u $USER /opt/uio/anaconda3/bin/sudospawner --help
+    
+Should return the help of sudospawner (if you do not set the entire path it fails.
+
+
+    sudo -u rhea sudo -n -u $USER echo 'fail'
+returns
+sudo: a password is required
+
+Because the only available command is sudospawner
+
+Enabling PAM for non-root:
+===========================
+I have:
+
+    $ ls -l /etc/shadow
+    -rw-r-----  1 root shadow   2197 Jul 21 13:41 shadow
+    
+Meaning the group shadow exists!
+
+I just need to add my new user to it:
+    
+    sudo usermod -a -G shadow jyroot
+    
+
+(if not I need to create a new shadow group):
+
+    sudo groupadd shadow
+    sudo chgrp shadow /etc/shadow
+    sudo chmod g+r /etc/shadow
+    
+
+Test PAM works:
+
+    sudo -u jyroot python -c "import pamela, getpass; print(pamela.authenticate('$USER', getpass.getpass()))"
+
+it should ask for password
+
+    sudo chown jyroot /opt/uio/jupyterhub
+    sudo chgrp jyroot /opt/uio/jupyterhub
+    
+(see https://github.com/jupyterhub/jupyterhub/wiki/Using-sudo-to-run-JupyterHub-without-root-privileges for more details)
+
+## Creation of jupyterhub configuration file:
+
+    
+    sudo -u jyroot jupyterhub --generate-config
+
+## Create certificate:
+
+    cd /opt/uio/jupyterhub
+    sudo -u jyroot mkdir ssl
+    sudo -u jyroot openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /opt/uio/jupyterhub/ssl/jupyterhub.key -out /opt/uio/jupyterhub/ssl/jupyterhub.crt
+    
+Add it in the new configuration file:
+
+    sudo -u jyroot vi jupyterhub_config.py
+    
+
+Test:
+    sudo -u jyroot jupyterhub --JupyterHub.spawner_class=sudospawner.SudoSpawner
+    
+In your browser:
+
+    https://158.37.63.70:8000/hub/login
+    
+(add exception again to trust this certificate)
+
+
+## Create a list of authorized users:
+    
+    cd /opt/uio/jupyterhub
+    
+    sudo -u jyroot vi userlist
+
+(I added my userid only i.e. annefou)
+
+    # Create a new user (with a new password):
+    
+    PASSWORD=uniquepasswordforeachuser
+    JUPYUSER=annefou
+    echo $JUPYUSER:$PASSWORD::::/home/$JUPYUSER:/bin/bash | sudo newusers
+    
+	# Add this new user to jupyterhub group
+
+    sudo usermod -a -G jupyterhub $JUPYUSER
+    
+
+## Start jupyterhub:
+    
+    cd /opt/uio/jupyterhub
+    sudo -u jyroot jupyterhub
+    
