@@ -40,7 +40,7 @@ TO BE DONE
 
     sudo apt-get install x11-apps
     sudo apt-get update
-    sudo apt-get install openjdk-7-jre
+    sudo apt-get install openjdk-9-jre
     sudo apt-get install firefox
 
 Installation of python 3
