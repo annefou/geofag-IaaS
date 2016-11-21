@@ -43,8 +43,63 @@ TO BE DONE
     sudo apt-get install openjdk-9-jre
     sudo apt-get install firefox
 
-Installation of python 3
-==========================
+
+## Add hostname in your hosts file ##
+
+sudo vi /etc/hosts
+
+My instance is called jupyterhub so I added jupyterhub on the first line:
+
+127.0.0.1 localhost jupyterhub
+
+(I had 127.0.0.1 localhost)
+
+## Create a new volume ###
+
+This step needs to be done once only i.e. you create a new volume to host your jupyterhub once only and then you just [attach](https://iaas.readthedocs.io/en/latest/enduser/manage-volumes.html#attach-a-volume-to-a-virtual-machine)/[detach](https://iaas.readthedocs.io/en/latest/enduser/manage-volumes.html#detach-a-volume-from-a-virtual-machine) it from your running instances.
+
+To create a new volume to host software (python anaconda, jupyterhub) as well as local data (please make backup of your data and use this volume as a local storage (for processing your data), follow instructions given at [https://iaas.readthedocs.io/en/latest/enduser/manage-volumes.html](https://iaas.readthedocs.io/en/latest/enduser/manage-volumes.html) to [create a new volume](https://iaas.readthedocs.io/en/latest/enduser/manage-volumes.html#create-a-volume) and [attach it to your instance](https://iaas.readthedocs.io/en/latest/enduser/manage-volumes.html#attach-a-volume-to-a-virtual-machine).
+
+Once created (**to be done with a new volume only**):
+
+### Find out which device to mount: ###
+
+    lsblk
+
+This command will return something like:
+
+    NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+    vda 253:0   0  20G  0 disk
+    |__vda1 253:1   0  20G  0 part /
+    vdb 253:16  0  20G  0 disk
+
+The last line is the most important. Here it tells you that vdb is your new volume. (if you have vdc or any other "name", please make sure you adapt the next commands!).
+
+### Create an ext4 File System: ###
+
+
+    mkfs.ext4 /dev/vdb
+
+### Create a new directory to mount your new volume: ###
+
+    mkdir -p /opt/uio
+    
+
+### Mount your new volume: ###
+
+     mount /dev/vdb /opt/uio
+
+### Check your new volume: ###
+
+    df -h /opt/uio
+
+It should return something like:
+    
+    FilesystemSize  Used Available Use% Mounted on
+    /dev/vdb  19.8G150.5M  19.2G   2% /opt/uio
+ 
+
+##Installation of python 3##
 
     wget http://repo.continuum.io/archive/Anaconda3-4.1.0-Linux-x86_64.sh
     
