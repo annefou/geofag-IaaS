@@ -78,16 +78,16 @@ The last line is the most important. Here it tells you that vdb is your new volu
 ### Create an ext4 File System: ###
 
 
-    mkfs.ext4 /dev/vdb
+    sudo mkfs.ext4 /dev/vdb
 
 ### Create a new directory to mount your new volume: ###
 
-    mkdir -p /opt/uio
+    sudo mkdir -p /opt/uio
     
 
 ### Mount your new volume: ###
 
-     mount /dev/vdb /opt/uio
+     sudo mount /dev/vdb /opt/uio
 
 ### Check your new volume: ###
 
