@@ -98,12 +98,19 @@ It should return something like:
     FilesystemSize  Used Available Use% Mounted on
     /dev/vdb  19.8G150.5M  19.2G   2% /opt/uio
  
+### Change permissions ###
 
+    cd /opt
+    sudo chown ubuntu uio
+    cd /opt/uio
+    mkdir -p /opt/uio/packages
+  
 ##Installation of python 3##
 
-    wget http://repo.continuum.io/archive/Anaconda3-4.1.0-Linux-x86_64.sh
+    cd /opt/uio/packages
+    wget http://repo.continuum.io/archive/Anaconda3-4.2.0-Linux-x86_64.sh
     
-    bash Anaconda3-4.1.0-Linux-x86_64.sh
+    bash Anaconda3-4.2.0-Linux-x86_64.sh -b -p /opt/uio/packages/python/anaconda3
     
 
 - When asked where to install python, I chose the default location
